@@ -1,166 +1,215 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roleta de Palavras em Inglês - Categorias</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f0f0f0;
-      padding: 50px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roleta de Palavras em Inglês - Difícil</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    color: #fff;
+    padding: 40px;
+  }
 
-    #roleta {
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      border: 5px solid #333;
-      margin: 20px auto;
-      background: conic-gradient(
-        #f44336 0 20%,    /* Frutas */
-        #4caf50 20% 40%,  /* Animais */
-        #2196f3 40% 60%,  /* Objetos */
-        #ffeb3b 60% 80%,  /* Natureza */
-        #9c27b0 80% 100%  /* Escola */
-      );
-      transition: transform 3s cubic-bezier(0.33, 1, 0.68, 1);
-    }
+  h1 {
+    margin-bottom: 20px;
+    font-size: 2em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
 
-    #pointer {
-      width: 0; 
-      height: 0; 
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 30px solid #333;
-      margin: 20px auto;
-    }
+  #roleta {
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    border: 5px solid #333;
+    margin: 20px auto;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    background: conic-gradient(
+      #f44336 0 20%,    /* Frutas */
+      #4caf50 20% 40%,  /* Animais */
+      #2196f3 40% 60%,  /* Objetos */
+      #ffeb3b 60% 80%,  /* Natureza */
+      #9c27b0 80% 100%  /* Escola */
+    );
+    transition: transform 3s cubic-bezier(0.33, 1, 0.68, 1);
+  }
 
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px;
-    }
+  #pointer {
+    width: 0; 
+    height: 0; 
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid #333;
+    margin: 0 auto;
+  }
 
-    h2, h3 {
-      margin-top: 20px;
-    }
+  button {
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+  }
 
-    #categoria {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-  </style>
+  button:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.2);
+  }
+
+  input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    margin: 10px;
+    text-align: center;
+  }
+
+  #resultado {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  #dica {
+    margin-top: 15px;
+    font-size: 1.1em;
+  }
+
+  #categoria {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  #tentativas {
+    margin-top: 5px;
+    font-size: 1em;
+    color: #ffeb3b;
+  }
+
+  #pontuacao {
+    color: #00ffcc;
+  }
+
+</style>
 </head>
 <body>
 
-  <h1>Roleta de Palavras em Inglês</h1>
+<h1>Roleta de Palavras em Inglês</h1>
 
-  <div id="pointer"></div>
-  <div id="roleta"></div>
+<div id="pointer"></div>
+<div id="roleta"></div>
 
-  <button onclick="girarRoleta()">Girar Roleta</button>
+<button onclick="girarRoleta()">Girar Roleta</button>
 
-  <h2 id="categoria"></h2>
-  <h2 id="dica"></h2>
-  <input type="text" id="resposta" placeholder="Digite a palavra em inglês">
-  <button onclick="verificarResposta()">Enviar</button>
+<h2 id="categoria"></h2>
+<h2 id="dica"></h2>
+<input type="text" id="resposta" placeholder="Digite a palavra em inglês">
+<button onclick="verificarResposta()">Enviar</button>
 
-  <h3 id="resultado"></h3>
-  <h3>Pontuação: <span id="pontuacao">0</span></h3>
-  <h3 id="tentativas"></h3>
+<h3 id="resultado"></h3>
+<h3>Pontuação: <span id="pontuacao">0</span></h3>
+<h3 id="tentativas"></h3>
 
-  <script>
-    const categorias = {
-      "Frutas": [
-        { palavra: "apple", dica: "É uma fruta vermelha ou verde" },
-        { palavra: "banana", dica: "Amarela e comprida" }
-      ],
-      "Animais": [
-        { palavra: "dog", dica: "Um animal de estimação que late" },
-        { palavra: "cat", dica: "Um animal de estimação que mia" }
-      ],
-      "Objetos": [
-        { palavra: "book", dica: "Você lê isso" },
-        { palavra: "computer", dica: "Máquina usada para programar e jogar" }
-      ],
-      "Natureza": [
-        { palavra: "sun", dica: "Brilha no céu durante o dia" },
-        { palavra: "tree", dica: "Planta grande com tronco e folhas" }
-      ],
-      "Escola": [
-        { palavra: "school", dica: "Lugar onde se aprende" },
-        { palavra: "teacher", dica: "Pessoa que ensina os alunos" }
-      ]
-    };
+<script>
+const categorias = {
+  "Frutas": [
+    { palavra: "apple", dica: "Fruta vermelha ou verde", pontos: 10 },
+    { palavra: "banana", dica: "Amarela e comprida", pontos: 10 },
+    { palavra: "pineapple", dica: "Tropical com coroa", pontos: 15 }
+  ],
+  "Animais": [
+    { palavra: "dog", dica: "Animal de estimação que late", pontos: 10 },
+    { palavra: "cat", dica: "Animal de estimação que mia", pontos: 10 },
+    { palavra: "elephant", dica: "Animal grande com tromba", pontos: 15 }
+  ],
+  "Objetos": [
+    { palavra: "book", dica: "Você lê isso", pontos: 10 },
+    { palavra: "computer", dica: "Máquina usada para programar", pontos: 15 },
+    { palavra: "microscope", dica: "Instrumento para ver objetos minúsculos", pontos: 20 }
+  ],
+  "Natureza": [
+    { palavra: "sun", dica: "Brilha no céu durante o dia", pontos: 10 },
+    { palavra: "tree", dica: "Planta grande com tronco e folhas", pontos: 10 },
+    { palavra: "waterfall", dica: "Cai da montanha com força", pontos: 15 }
+  ],
+  "Escola": [
+    { palavra: "school", dica: "Lugar onde se aprende", pontos: 10 },
+    { palavra: "teacher", dica: "Pessoa que ensina os alunos", pontos: 10 },
+    { palavra: "homework", dica: "Tarefa que se faz em casa", pontos: 15 }
+  ]
+};
 
-    const coresCategorias = ["#f44336", "#4caf50", "#2196f3", "#ffeb3b", "#9c27b0"];
-    const categoriasNomes = Object.keys(categorias);
+const categoriasNomes = Object.keys(categorias);
+let palavraAtual = null;
+let pontuacao = 0;
+let tentativasRestantes = 3;
+const roleta = document.getElementById('roleta');
 
-    let palavraAtual = null;
-    let pontuacao = 0;
-    let tentativasRestantes = 3;
-    const roleta = document.getElementById('roleta');
+function girarRoleta() {
+  const graus = Math.floor(Math.random() * 360 + 1080);
+  roleta.style.transform = `rotate(${graus}deg)`;
 
-    function girarRoleta() {
-      const graus = Math.floor(Math.random() * 360 + 1080); // 3 voltas + aleatório
-      roleta.style.transform = `rotate(${graus}deg)`;
+  setTimeout(() => {
+    const rotacaoFinal = (graus % 360);
+    const indiceCategoria = Math.floor(rotacaoFinal / 72); 
+    const categoriaSelecionada = categoriasNomes[indiceCategoria];
 
-      // Determina categoria com base no ângulo final
-      setTimeout(() => {
-        const rotacaoFinal = (graus % 360);
-        const indiceCategoria = Math.floor(rotacaoFinal / 72); // 360/5=72 graus por setor
-        const categoriaSelecionada = categoriasNomes[indiceCategoria];
+    const palavrasCategoria = categorias[categoriaSelecionada];
+    const indicePalavra = Math.floor(Math.random() * palavrasCategoria.length);
+    palavraAtual = palavrasCategoria[indicePalavra];
 
-        // Sorteia palavra dentro da categoria
-        const palavrasCategoria = categorias[categoriaSelecionada];
-        const indicePalavra = Math.floor(Math.random() * palavrasCategoria.length);
-        palavraAtual = palavrasCategoria[indicePalavra];
+    document.getElementById('categoria').textContent = `Categoria: ${categoriaSelecionada}`;
+    document.getElementById('dica').textContent = `Dica: ${"_ ".repeat(palavraAtual.palavra.length)}`;
+    document.getElementById('resultado').textContent = "";
+    document.getElementById('resposta').value = "";
+    tentativasRestantes = 3;
+    document.getElementById('tentativas').textContent = `Tentativas restantes: ${tentativasRestantes}`;
+  }, 3000);
+}
 
-        document.getElementById('categoria').textContent = `Categoria: ${categoriaSelecionada}`;
-        document.getElementById('dica').textContent = "Dica: " + palavraAtual.dica;
-        document.getElementById('resultado').textContent = "";
-        document.getElementById('resposta').value = "";
-        tentativasRestantes = 3;
-        document.getElementById('tentativas').textContent = `Tentativas restantes: ${tentativasRestantes}`;
-      }, 3000);
+function verificarResposta() {
+  const resposta = document.getElementById('resposta').value.trim().toLowerCase();
+  const resultado = document.getElementById('resultado');
+
+  if (!palavraAtual) {
+    resultado.textContent = "Primeiro clique em 'Girar Roleta'!";
+    return;
+  }
+
+  if (resposta === palavraAtual.palavra.toLowerCase()) {
+    resultado.style.color = "#00ff00";
+    resultado.textContent = `🎉 Acertou! +${palavraAtual.pontos} pontos`;
+    pontuacao += palavraAtual.pontos;
+    document.getElementById('pontuacao').textContent = pontuacao;
+    palavraAtual = null;
+    document.getElementById('categoria').textContent = "";
+    document.getElementById('dica').textContent = "";
+    document.getElementById('tentativas').textContent = "";
+  } else {
+    tentativasRestantes--;
+    resultado.style.color = "#ff3333";
+    if (tentativasRestantes > 0) {
+      resultado.textContent = "❌ Errado! Tente novamente.";
+      document.getElementById('tentativas').textContent = `Tentativas restantes: ${tentativasRestantes}`;
+    } else {
+      resultado.textContent = `💀 Você perdeu! A palavra era "${palavraAtual.palavra}"`;
+      tentativasRestantes = 0;
+      palavraAtual = null;
+      document.getElementById('categoria').textContent = "";
+      document.getElementById('dica').textContent = "";
+      document.getElementById('tentativas').textContent = "";
     }
-
-    function verificarResposta() {
-      const resposta = document.getElementById('resposta').value.trim().toLowerCase();
-      const resultado = document.getElementById('resultado');
-
-      if (!palavraAtual) {
-        resultado.textContent = "Primeiro clique em 'Girar Roleta'!";
-        return;
-      }
-
-      if (resposta === palavraAtual.palavra.toLowerCase()) {
-        resultado.textContent = "🎉 Parabéns! Você acertou!";
-        pontuacao += 10;
-        document.getElementById('pontuacao').textContent = pontuacao;
-        palavraAtual = null;
-        document.getElementById('categoria').textContent = "";
-        document.getElementById('dica').textContent = "";
-        document.getElementById('tentativas').textContent = "";
-      } else {
-        tentativasRestantes--;
-        if (tentativasRestantes > 0) {
-          resultado.textContent = "❌ Errado! Tente novamente.";
-          document.getElementById('tentativas').textContent = `Tentativas restantes: ${tentativasRestantes}`;
-        } else {
-          resultado.textContent = `💀 Você perdeu! A palavra era "${palavraAtual.palavra}"`;
-          tentativasRestantes = 0;
-          palavraAtual = null;
-          document.getElementById('categoria').textContent = "";
-          document.getElementById('dica').textContent = "";
-          document.getElementById('tentativas').textContent = "";
-        }
-      }
-      document.getElementById('resposta').value = "";
-    }
-  </script>
+  }
+  document.getElementById('resposta').value = "";
+}
+</script>
 
 </body>
 </html>
