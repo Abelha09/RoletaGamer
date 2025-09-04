@@ -27,11 +27,11 @@
     margin: 20px auto;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
     background: conic-gradient(
-      #f44336 0 20%,    /* Frutas */
-      #4caf50 20% 40%,  /* Animais */
-      #2196f3 40% 60%,  /* Objetos */
-      #ffeb3b 60% 80%,  /* Natureza */
-      #9c27b0 80% 100%  /* Escola */
+      #f44336 0 20%, 
+      #4caf50 20% 40%, 
+      #2196f3 40% 60%, 
+      #ffeb3b 60% 80%, 
+      #9c27b0 80% 100%
     );
     transition: transform 3s cubic-bezier(0.33, 1, 0.68, 1);
   }
@@ -120,29 +120,39 @@
 <script>
 const categorias = {
   "Frutas": [
-    { palavra: "apple", dica: "Fruta vermelha ou verde", pontos: 10 },
-    { palavra: "banana", dica: "Amarela e comprida", pontos: 10 },
-    { palavra: "pineapple", dica: "Tropical com coroa", pontos: 15 }
+    { palavra: "apple", dificuldade: 1, dica: "Fruta vermelha ou verde" },
+    { palavra: "banana", dificuldade: 1, dica: "Amarela e comprida" },
+    { palavra: "pineapple", dificuldade: 2, dica: "Tropical com coroa" },
+    { palavra: "strawberry", dificuldade: 2, dica: "Pequena e vermelha" },
+    { palavra: "pomegranate", dificuldade: 3, dica: "Fruta com sementes vermelhas" }
   ],
   "Animais": [
-    { palavra: "dog", dica: "Animal de estimação que late", pontos: 10 },
-    { palavra: "cat", dica: "Animal de estimação que mia", pontos: 10 },
-    { palavra: "elephant", dica: "Animal grande com tromba", pontos: 15 }
+    { palavra: "dog", dificuldade: 1, dica: "Animal de estimação que late" },
+    { palavra: "cat", dificuldade: 1, dica: "Animal de estimação que mia" },
+    { palavra: "elephant", dificuldade: 2, dica: "Animal grande com tromba" },
+    { palavra: "kangaroo", dificuldade: 2, dica: "Animal que pula na Austrália" },
+    { palavra: "chameleon", dificuldade: 3, dica: "Muda de cor e vive em árvores" }
   ],
   "Objetos": [
-    { palavra: "book", dica: "Você lê isso", pontos: 10 },
-    { palavra: "computer", dica: "Máquina usada para programar", pontos: 15 },
-    { palavra: "microscope", dica: "Instrumento para ver objetos minúsculos", pontos: 20 }
+    { palavra: "book", dificuldade: 1, dica: "Você lê isso" },
+    { palavra: "computer", dificuldade: 2, dica: "Máquina usada para programar" },
+    { palavra: "microscope", dificuldade: 3, dica: "Instrumento para ver objetos minúsculos" },
+    { palavra: "telescope", dificuldade: 3, dica: "Usado para ver estrelas" },
+    { palavra: "backpack", dificuldade: 2, dica: "Usado para carregar livros" }
   ],
   "Natureza": [
-    { palavra: "sun", dica: "Brilha no céu durante o dia", pontos: 10 },
-    { palavra: "tree", dica: "Planta grande com tronco e folhas", pontos: 10 },
-    { palavra: "waterfall", dica: "Cai da montanha com força", pontos: 15 }
+    { palavra: "sun", dificuldade: 1, dica: "Brilha no céu durante o dia" },
+    { palavra: "tree", dificuldade: 1, dica: "Planta grande com tronco e folhas" },
+    { palavra: "waterfall", dificuldade: 2, dica: "Cai da montanha com força" },
+    { palavra: "volcano", dificuldade: 2, dica: "Explode com lava" },
+    { palavra: "glacier", dificuldade: 3, dica: "Grande bloco de gelo natural" }
   ],
   "Escola": [
-    { palavra: "school", dica: "Lugar onde se aprende", pontos: 10 },
-    { palavra: "teacher", dica: "Pessoa que ensina os alunos", pontos: 10 },
-    { palavra: "homework", dica: "Tarefa que se faz em casa", pontos: 15 }
+    { palavra: "school", dificuldade: 1, dica: "Lugar onde se aprende" },
+    { palavra: "teacher", dificuldade: 1, dica: "Pessoa que ensina os alunos" },
+    { palavra: "homework", dificuldade: 2, dica: "Tarefa que se faz em casa" },
+    { palavra: "classroom", dificuldade: 2, dica: "Lugar onde os alunos estudam" },
+    { palavra: "curriculum", dificuldade: 3, dica: "Conjunto de disciplinas de estudo" }
   ]
 };
 
@@ -165,11 +175,11 @@ function girarRoleta() {
     const indicePalavra = Math.floor(Math.random() * palavrasCategoria.length);
     palavraAtual = palavrasCategoria[indicePalavra];
 
+    tentativasRestantes = Math.max(1, 4 - palavraAtual.dificuldade); 
     document.getElementById('categoria').textContent = `Categoria: ${categoriaSelecionada}`;
-    document.getElementById('dica').textContent = `Dica: ${"_ ".repeat(palavraAtual.palavra.length)}`;
+    document.getElementById('dica').textContent = "_ ".repeat(palavraAtual.palavra.length);
     document.getElementById('resultado').textContent = "";
     document.getElementById('resposta').value = "";
-    tentativasRestantes = 3;
     document.getElementById('tentativas').textContent = `Tentativas restantes: ${tentativasRestantes}`;
   }, 3000);
 }
@@ -179,14 +189,16 @@ function verificarResposta() {
   const resultado = document.getElementById('resultado');
 
   if (!palavraAtual) {
-    resultado.textContent = "Primeiro clique em 'Girar Roleta'!";
+    resultado.style.color = "#ffeb3b";
+    resultado.textContent = "Clique em 'Girar Roleta' primeiro!";
     return;
   }
 
   if (resposta === palavraAtual.palavra.toLowerCase()) {
+    const pontos = palavraAtual.dificuldade * 10;
+    pontuacao += pontos;
     resultado.style.color = "#00ff00";
-    resultado.textContent = `🎉 Acertou! +${palavraAtual.pontos} pontos`;
-    pontuacao += palavraAtual.pontos;
+    resultado.textContent = `🎉 Acertou! +${pontos} pontos`;
     document.getElementById('pontuacao').textContent = pontuacao;
     palavraAtual = null;
     document.getElementById('categoria').textContent = "";
@@ -200,7 +212,6 @@ function verificarResposta() {
       document.getElementById('tentativas').textContent = `Tentativas restantes: ${tentativasRestantes}`;
     } else {
       resultado.textContent = `💀 Você perdeu! A palavra era "${palavraAtual.palavra}"`;
-      tentativasRestantes = 0;
       palavraAtual = null;
       document.getElementById('categoria').textContent = "";
       document.getElementById('dica').textContent = "";
