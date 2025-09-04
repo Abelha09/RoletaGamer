@@ -44,15 +44,15 @@
 
   #pointer {
     position: absolute;
-    top: -40px;
+    top: 100%; /* posiciona logo abaixo do elemento pai */
     left: 50%;
     transform: translateX(-50%);
     width: 0; 
     height: 0; 
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
-    border-bottom: 40px solid #333;
-  }
+    border-top: 40px solid #333; /* use border-top para apontar para baixo */
+}
 
   button {
     padding: 12px 25px;
